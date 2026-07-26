@@ -3681,7 +3681,9 @@ function bukaKartuMonitor(data) {
   showFlash('guru', '👑', 'Membuka dashboard...');
   toast('👑 Ini QR dashboard Kepala Sekolah — membuka halamannya...');
   scanCooldown = false;
-  setTimeout(() => { window.location.href = data.trim(); }, 600);
+  // PERBAIKAN: sama seperti bukaKartuRiwayat() -- dibuka di tab baru
+  // supaya scan.html tidak unload dan tidak perlu reinit saat ditutup.
+  setTimeout(() => { window.open(data.trim(), '_blank'); resumeScanSetelahJeda(); }, 600);
 }
 
 function bukaKartuRiwayat(data) {
@@ -3703,7 +3705,15 @@ function bukaKartuRiwayat(data) {
   showFlash('guru', '📖', 'Membuka riwayat...');
   toast('📖 Ini QR riwayat kehadiran — membuka halamannya...');
   scanCooldown = false;
-  setTimeout(() => { window.location.href = data.trim(); }, 600);
+  // PERBAIKAN: sebelumnya window.location.href pindah TAB INI sepenuhnya
+  // ke halaman riwayat, sehingga scan.html (kamera + model + splash)
+  // benar-benar unload. Begitu ditutup dan balik ke /scan, semuanya
+  // dimuat ulang dari nol -- lambat. Sekarang dibuka di TAB BARU supaya
+  // scan.html di tab ini tetap hidup (kamera tetap nyala) di belakang.
+  // Saat halaman riwayat ditutup (tutupDanKembaliKeScan() di riwayat.html
+  // memanggil window.close()), user otomatis kembali ke tab scan yang
+  // sudah siap pakai -- tanpa reinit apa pun.
+  setTimeout(() => { window.open(data.trim(), '_blank'); resumeScanSetelahJeda(); }, 600);
 }
 
 async function processQR(data) {
