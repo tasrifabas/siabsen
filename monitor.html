@@ -162,6 +162,13 @@ function tombolTutupHTML() {
   return `<button class="btn-close" onclick="tutupDanKembaliKeScan()">✖ Tutup dan kembali ke halaman scan</button>`;
 }
 function tutupDanKembaliKeScan() {
+  // Sama seperti riwayat.html: kalau dibuka dari scan.html lewat
+  // window.open(), tutup saja tab ini supaya kembali ke tab scan.html
+  // yang tidak pernah unload (tidak perlu reinit kamera/model lagi).
+  if (window.opener && !window.opener.closed) {
+    window.close();
+    return;
+  }
   window.location.href = window.location.origin + '/scan';
 }
 
