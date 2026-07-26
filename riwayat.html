@@ -286,6 +286,17 @@ function tombolTutupHTML() {
   return `<button class="btn-close" onclick="tutupDanKembaliKeScan()">✖ Tutup dan kembali ke halaman scan</button>`;
 }
 function tutupDanKembaliKeScan() {
+  // PERBAIKAN: kalau halaman ini dibuka dari scan.html lewat window.open()
+  // (window.opener ada & masih terbuka), cukup TUTUP TAB INI -- user
+  // langsung kembali ke tab scan.html yang tidak pernah unload, jadi
+  // kamera & model tidak perlu dimuat ulang (tidak ada animasi splash
+  // lagi). Kalau halaman ini dibuka langsung (bukan dari kiosk scan,
+  // misal discan pakai kamera HP biasa), window.opener tidak ada --
+  // fallback ke cara lama, pindah ke /scan.
+  if (window.opener && !window.opener.closed) {
+    window.close();
+    return;
+  }
   window.location.href = window.location.origin + '/scan';
 }
 
